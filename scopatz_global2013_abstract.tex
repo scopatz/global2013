@@ -59,7 +59,7 @@
 % Insert authors' names and short version of title in lines below
 %
 \authorHead{Anthony M. Scopatz}
-\shortTitle{A dynamic, dependent type system for fuel cycle code generation}
+\shortTitle{A dynamic, dependent type system for nuclear fuel cycle code generation}
 
 \confTitle{GLOBAL 2013: International Nuclear Fuel Cycle Conference}
 \confLocation{Salt Lake City, Utah, Sept. 29-Oct. 3, 2013}
@@ -72,7 +72,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
-\title{A Dynamic, Dependent Type System for Fuel Cycle Code Generation}
+\title{A Dynamic, Dependent Type System for Nuclear Fuel Cycle Code Generation}
 
 \author{Anthony Scopatz}
 \affil{The University of Chicago\\
@@ -83,18 +83,21 @@
 
 \begin{abstract}
 \raggedright
-This paper describes closed form, Taylor series approximations to the number 
-product stages in a multicomponent enrichment cascade.  Such closed form 
-approximations are required when a symbolic, rather than a numeric, algorithm
-is used to compute the optimal cascade state.  Both first and second order 
-approximations were implemented.  The first order solution was found to be 
-grossly incorrect, having the wrong functional form over the entire domain.
-On the other hand, the second order solution shows excellent agreement with 
-the `true' solution over the domain of interest. An implementation of the 
-symbolic, second order solver is available in the free \& open source 
-PyNE library.
+The nuclear fuel cycle may be intrepreted as a network or graph, thus 
+allowing methods from formal graph theory \cite{DIE05B} to be used with 
+respect to it.  In this case the edges are seen as economic exchange 
+between the nodes.  Often this exchange is modeled as a two way materials-for-money 
+relationship.  However, what the nodes represent is considerably 
+more complex.  
 
-\emph{Key Words}: PyNE, cyclus, Bright, fuel cycle
+Nodes are often idealized as nuclear fuel cycle facilities (reactors, enrichment
+cascades, deep geologic repositories).  However, nodes may also sometimes 
+represent regions or institutions which also exchange various commodities.
+
+
+\cite{Pierce:2002:TPL:509043}
+
+\emph{Key Words}: cyclus, Bright, fuel cycle
 \end{abstract}
 
 \setlength{\baselineskip}{12pt}
