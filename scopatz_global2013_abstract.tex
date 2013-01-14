@@ -1,0 +1,106 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  This is a sample LaTeX input file for your contribution to 
+%  the MC2013 conference. Modified by R.C. Martineau at INL from A. 
+%  Sood at LANL, from J. Wagner ORNL who obtained the original class 
+%  file by Jim Warsa, LANL, 16 July 2002}
+%
+%  Please use it as a template for your full paper 
+%    Accompanying/related file(s) include: 
+%       1. Document class/format file: mc2013.cls
+%       2. Sample Postscript Figure:   figure.eps
+%       3. A PDF file showing the desired appearance: template.pdf 
+%    Direct questions about these files to: richard.martinea@inl.gov
+%
+%    Notes: 
+%      (1) You can use the "dvips" utility to convert .dvi 
+%          files to PostScript.  Then, use either Acrobat 
+%          Distiller or "ps2pdf" to convert to PDF format. 
+%      (2) Different versions of LaTeX have been observed to 
+%          shift the page down, causing improper margins.
+%          If this occurs, adjust the "topmargin" value in the
+%          mc2013.cls file to achieve the proper margins. 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass{ansconf}
+%
+%  various packages that you may wish to activate for usage 
+\usepackage{graphicx}
+\usepackage{tabls}
+\usepackage{hyperref}
+%
+
+%General Short-Cut Commands
+\newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
+\newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+%\newcommand{\nuc}[2]{\superscript{#2}{#1}}
+\newcommand{\nuc}[2]{{#1}-{#2}}
+\newcommand{\ith}[0]{$i^{\mbox{th}}$ }
+\newcommand{\jth}[0]{$j^{\mbox{th}}$ }
+\newcommand{\kth}[0]{$k^{\mbox{th}}$ }
+\newcommand{\us}[0]{$\mu$s }
+
+% New definition of square root:
+% it renames \sqrt as \oldsqrt
+\let\oldsqrt\sqrt
+% it defines the new \sqrt in terms of the old one
+\def\sqrt{\mathpalette\DHLhksqrt}
+\def\DHLhksqrt#1#2{%
+\setbox0=\hbox{$#1\oldsqrt{#2\,}$}\dimen0=\ht0
+\advance\dimen0-0.2\ht0
+\setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+{\box0\lower0.4pt\box2}}
+
+
+
+% Insert authors' names and short version of title in lines below
+%
+\authorHead{Anthony M. Scopatz}
+\shortTitle{A dynamic, dependent type system for fuel cycle code generation}
+
+\confTitle{GLOBAL 2013: International Nuclear Fuel Cycle Conference}
+\confLocation{Salt Lake City, Utah, Sept. 29-Oct. 3, 2013}
+\confPublished{on CD-ROM (2013)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   BEGIN DOCUMENT
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{A Dynamic, Dependent Type System for Fuel Cycle Code Generation}
+
+\author{Anthony Scopatz}
+\affil{The University of Chicago\\
+  5754 S. Ellis Ave, Chicago, IL, 60637 \\
+  scopatz@flash.uchicago.edu}
+
+\maketitle
+
+\begin{abstract}
+\raggedright
+This paper describes closed form, Taylor series approximations to the number 
+product stages in a multicomponent enrichment cascade.  Such closed form 
+approximations are required when a symbolic, rather than a numeric, algorithm
+is used to compute the optimal cascade state.  Both first and second order 
+approximations were implemented.  The first order solution was found to be 
+grossly incorrect, having the wrong functional form over the entire domain.
+On the other hand, the second order solution shows excellent agreement with 
+the `true' solution over the domain of interest. An implementation of the 
+symbolic, second order solver is available in the free \& open source 
+PyNE library.
+
+\emph{Key Words}: PyNE, cyclus, Bright, fuel cycle
+\end{abstract}
+
+\setlength{\baselineskip}{12pt}
+
+\bibliographystyle{ans}
+\bibliography{refs}
+
+
+\end{document}
