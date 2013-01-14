@@ -105,8 +105,32 @@ of facility types.  This is because classes are the syntatic sugar for type
 declaration in a language.  Furthermore, having an extendable space of types is 
 critical for developing new facility models.
 
+Computationally, this state-of-affairs is sufficient provided that the facility 
+models (nodes) only need to be exposed to a single fuel cycle simulator (graph).
+However, if multiple simulators must be aware of the same facitily type, an 
+abstract represntation of the facitily model is needed.  This abstraction is then
+used to create concrete representation of the facility for each of the fuel cycle
+simulators.  Since the facilities are often classes such an abstraction is 
+known as a \emph{type system} \cite{Pierce:2002:TPL:509043}.
 
-\cite{Pierce:2002:TPL:509043}
+The requirement of one implemention for multiple simulators has recently
+arisen for the Bright collection of fuel cycle facilities \cite{Scopatz2009}.
+Bright's default graph representation is the Python abstract syntax tree and its
+execution engine is the Python interpreter.  However, the facility models -- 
+which are implemented in C++ -- must now also be hooked into the cyclus simulator.  
+Cyclus uses XML as its input graph representation and a custom client-server based 
+execution engine.
+
+Therefore a robust type system was implemented for the nuclear fuel cycle.  This
+system is capable of representing any fuel cycle facility.  Types declared in this 
+system can then be used to automatically generate code which binds a facility 
+implementation to a simulator front end.  Given the motivating use case, code 
+generation routines have been created for the Bright and cyclus execution engines.
+
+The strategy detailed here has a number of distinct advantages made possible by 
+code generation abstraction. One is the 
+incoluation against front end interface fragility over time. Anothere is the easy 
+extension to other nuclear fuel cycle simulators.
 
 \emph{Key Words}: cyclus, Bright, fuel cycle
 \end{abstract}
