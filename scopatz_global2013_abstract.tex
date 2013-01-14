@@ -91,8 +91,19 @@ relationship.  However, what the nodes represent is considerably
 more complex.  
 
 Nodes are often idealized as nuclear fuel cycle facilities (reactors, enrichment
-cascades, deep geologic repositories).  However, nodes may also sometimes 
-represent regions or institutions which also exchange various commodities.
+cascades, deep geologic repositories).  Unlike the edges, though, distinct structure
+is almost always needed to represent different kinds of facilities.  Intuitively, 
+this is because facilties representing a fuel cycle implement unique, important 
+tasks.  For instance, a power reactor is not subistutable for an enrichment facility
+nor vice versa.  (Note that nodes may also sometimes 
+represent regions or institutions which also exchange various commodities, 
+instead of facilities.  The following discussion also applies to them as well).
+
+With the advent of modern object-oriented programming languages and fuel cycle
+simulators implemented in these languages, it is natural to define class heirarchies
+of facility types.  This is because classes are the syntatic sugar for type 
+declaration in a language.  Furthermore, having an extendable space of types is 
+critical for developing new facility models.
 
 
 \cite{Pierce:2002:TPL:509043}
