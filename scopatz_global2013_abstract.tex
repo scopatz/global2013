@@ -83,37 +83,37 @@
 
 \begin{abstract}
 \raggedright
-The nuclear fuel cycle may be intrepreted as a network or graph, thus 
+The nuclear fuel cycle may be interpreted as a network or graph, thus 
 allowing methods from formal graph theory \cite{DIE05B} to be used with 
-respect to it.  In this case the edges are seen as economic exchange 
+respect to it.  Using this interpretation the edges are seen as an economic exchange 
 between the nodes.  Often this exchange is modeled as a two way materials-for-money 
-relationship.  However, what the nodes represent is considerably 
+relationship.  However, what the nodes in the graph represent is considerably 
 more complex.  
 
 Nodes are often idealized as nuclear fuel cycle facilities (reactors, enrichment
 cascades, deep geologic repositories).  Unlike the edges, though, distinct structure
-is almost always needed to represent different kinds of facilities.  Intuitively, 
-this is because facilties representing a fuel cycle implement unique, important 
-tasks.  For instance, a power reactor is not subistutable for an enrichment facility
-nor vice versa.  (Note that nodes may also sometimes 
-represent regions or institutions which also exchange various commodities, 
-instead of facilities.  The following discussion also applies to them as well).
+is almost always needed to represent different kinds of facilities.  Intuitively 
+this is because facilities representing a fuel cycle implement unique, important 
+tasks.  For instance, a power reactor is not substitutable for an enrichment facility
+nor vice versa.  
 
-With the advent of modern object-oriented programming languages and fuel cycle
-simulators implemented in these languages, it is natural to define class heirarchies
-of facility types.  This is because classes are the syntatic sugar for type 
+With the advent of modern object-oriented programming languages -- and fuel cycle
+simulators implemented in these languages -- it is natural to define a class 
+hierarchy of facility types.  This is because classes are the syntatic sugar for type 
 declaration in a language.  Furthermore, having an extendable space of types is 
-critical for developing new facility models.
+critical for developing new facility models.  Such a space is neatly provided by 
+object orietntation.
 
 Computationally, this state-of-affairs is sufficient provided that the facility 
 models (nodes) only need to be exposed to a single fuel cycle simulator (graph).
-However, if multiple simulators must be aware of the same facitily type, an 
-abstract represntation of the facitily model is needed.  This abstraction is then
-used to create concrete representation of the facility for each of the fuel cycle
+However, if multiple simulators must be aware of the same facility type 
+implementation, an  abstract representation of the facility model is needed.  
+This abstraction is then
+used to create concrete representations of the facility for each of the fuel cycle
 simulators.  Since the facilities are often classes such an abstraction is 
 known as a \emph{type system} \cite{Pierce:2002:TPL:509043}.
 
-The requirement of one implemention for multiple simulators has recently
+The requirement of one implementation for multiple simulators has recently
 arisen for the Bright collection of fuel cycle facilities \cite{Scopatz2009}.
 Bright's default graph representation is the Python abstract syntax tree and its
 execution engine is the Python interpreter.  However, the facility models -- 
@@ -121,16 +121,18 @@ which are implemented in C++ -- must now also be hooked into the cyclus simulato
 Cyclus uses XML as its input graph representation and a custom client-server based 
 execution engine \cite{cyclus2012}.
 
-Therefore a robust, dependent type system was implemented for the nuclear fuel cycle.
+Therefore a robust, dependent type system was developed for the nuclear fuel cycle.
 This system is capable of representing any fuel cycle facility.  Types declared in 
 this system can then be used to automatically generate code which binds a facility 
-implementation to a simulator front end.  Given the motivating use case, code 
+implementation to a simulator front end.  
+Furthermore, this type system is also capable of performing both static and dynamic
+verification \& validation of facility instances.
+This strategy also has advantages common to code code generation techniques:
+inoculation against front end interface fragility, easy 
+extension to more fuel cycle simulators, \emph{etc}.
+Given the motivating use case, code 
 generation routines have been created for the Bright and cyclus execution engines.
 
-The strategy detailed here has a number of distinct advantages made possible by 
-code generation abstraction. One is the 
-incoluation against front end interface fragility over time. Anothere is the easy 
-extension to other nuclear fuel cycle simulators.
 
 \emph{Key Words}: cyclus, Bright, fuel cycle
 \end{abstract}
