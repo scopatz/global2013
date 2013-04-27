@@ -42,8 +42,8 @@
 \setlength{\headheight}{18pt}
 \setlength{\footskip}{0.4in}
 
-\setlength{\parindent}{0pt}
-\addtolength{\parskip}{1.0\baselineskip}
+\setlength{\parindent}{6.3mm}
+%\addtolength{\parskip}{1.0\baselineskip}
 
 \newcommand{\authorHead}[1]{\gdef\@authorHead{#1}}
 \newcommand{\shortTitle}[1]{\gdef\@shortTitle{#1}}
