@@ -1,4 +1,5 @@
-manuscript = scopatz_global2013_abstract
+manuscript = scopatz_global2013
+#manuscript = scopatz_global2013_abstract
 references = refs
 latexopt   = -halt-on-error -file-line-error
 

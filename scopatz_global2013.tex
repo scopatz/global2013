@@ -1,0 +1,149 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  This is a sample LaTeX input file for your contribution to 
+%  the MC2013 conference. Modified by R.C. Martineau at INL from A. 
+%  Sood at LANL, from J. Wagner ORNL who obtained the original class 
+%  file by Jim Warsa, LANL, 16 July 2002}
+%
+%  Please use it as a template for your full paper 
+%    Accompanying/related file(s) include: 
+%       1. Document class/format file: mc2013.cls
+%       2. Sample Postscript Figure:   figure.eps
+%       3. A PDF file showing the desired appearance: template.pdf 
+%    Direct questions about these files to: richard.martinea@inl.gov
+%
+%    Notes: 
+%      (1) You can use the "dvips" utility to convert .dvi 
+%          files to PostScript.  Then, use either Acrobat 
+%          Distiller or "ps2pdf" to convert to PDF format. 
+%      (2) Different versions of LaTeX have been observed to 
+%          shift the page down, causing improper margins.
+%          If this occurs, adjust the "topmargin" value in the
+%          mc2013.cls file to achieve the proper margins. 
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\documentclass{anstrans}
+\documentclass{ansconfpaper}
+%
+%  various packages that you may wish to activate for usage 
+\usepackage{graphicx}
+\usepackage{tabls}
+\usepackage{hyperref}
+%
+
+%General Short-Cut Commands
+\newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
+\newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+%\newcommand{\nuc}[2]{\superscript{#2}{#1}}
+\newcommand{\nuc}[2]{{#1}-{#2}}
+\newcommand{\ith}[0]{$i^{\mbox{th}}$ }
+\newcommand{\jth}[0]{$j^{\mbox{th}}$ }
+\newcommand{\kth}[0]{$k^{\mbox{th}}$ }
+\newcommand{\us}[0]{$\mu$s }
+
+% New definition of square root:
+% it renames \sqrt as \oldsqrt
+\let\oldsqrt\sqrt
+% it defines the new \sqrt in terms of the old one
+\def\sqrt{\mathpalette\DHLhksqrt}
+\def\DHLhksqrt#1#2{%
+\setbox0=\hbox{$#1\oldsqrt{#2\,}$}\dimen0=\ht0
+\advance\dimen0-0.2\ht0
+\setbox2=\hbox{\vrule height\ht0 depth -\dimen0}%
+{\box0\lower0.4pt\box2}}
+
+
+
+% Insert authors' names and short version of title in lines below
+%
+\authorHead{Anthony M. Scopatz}
+\shortTitle{A dynamic, dependent type system for nuclear fuel cycle code generation}
+
+\confTitle{GLOBAL 2013: International Nuclear Fuel Cycle Conference}
+\confLocation{Salt Lake City, Utah, Sept. 29-Oct. 3, 2013}
+\confPublished{on CD-ROM (2013)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   BEGIN DOCUMENT
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{A Dynamic, Dependent Type System for Nuclear Fuel Cycle Code Generation}
+
+\author{Anthony Scopatz}
+\affil{The University of Chicago\\
+  5754 S. Ellis Ave, Chicago, IL, 60637 \\
+  scopatz@flash.uchicago.edu}
+
+\maketitle
+
+\begin{abstract}
+%\raggedright
+
+\emph{Key Words}: cyclus, Bright, fuel cycle
+\end{abstract}
+
+
+The nuclear fuel cycle may be interpreted as a network or graph, thus 
+allowing methods from formal graph theory \cite{DIE05B} to be used with 
+respect to it.  Using this interpretation the edges are seen as an economic exchange 
+between the nodes.  Often this exchange is modeled as a two way materials-for-money 
+relationship.  However, what the nodes in the graph represent is considerably 
+more complex.  
+
+Nodes are often idealized as nuclear fuel cycle facilities (reactors, enrichment
+cascades, deep geologic repositories).  Unlike the edges, though, distinct structure
+is almost always needed to represent different kinds of facilities.  Intuitively 
+this is because facilities within a fuel cycle implement unique, important 
+tasks.  For instance, a power reactor is not substitutable for an enrichment facility
+nor vice versa.  
+
+With the advent of modern object-oriented programming languages -- and fuel cycle
+simulators implemented in these languages -- it is natural to define a class 
+hierarchy of facility types.  This is because classes are the syntatic sugar for type 
+declaration in a language.  Furthermore, having an extendable space of types is 
+critical for developing new facility models.  Such a space is neatly provided by 
+object orientation.
+
+Computationally, this state-of-affairs is sufficient provided that the facility 
+models (nodes) only need to be exposed to a single fuel cycle simulator (graph).
+However, if multiple simulators must be aware of the same facility type 
+implementation, an  abstract representation of the facility model is needed.  
+This abstraction is then
+used to create concrete representations of the facility for each of the fuel cycle
+simulators.  Since the facilities are often classes such an abstraction is 
+known as a \emph{type system} \cite{Pierce:2002:TPL:509043}.
+
+The requirement of one implementation for multiple simulators has recently
+arisen for the Bright collection of fuel cycle facilities \cite{Scopatz2009}.
+Bright's default graph representation is the Python abstract syntax tree and its
+execution engine is the Python interpreter.  However, the facility models -- 
+which are implemented in C++ -- must now also be hooked into the cyclus simulator.  
+Cyclus uses XML as its input graph representation and a custom client-server based 
+execution engine \cite{cyclus2012}.
+
+Therefore a robust, dependent type system was developed for the nuclear fuel cycle.
+This system is capable of representing any fuel cycle facility.  Types declared in 
+this system can then be used to automatically generate code which binds a facility 
+implementation to a simulator front end.  
+Furthermore, this type system is also capable of performing both static and dynamic
+verification \& validation of facility instances.
+This strategy also has advantages common to code code generation techniques:
+inoculation against front end interface fragility, easy 
+extension to more fuel cycle simulators, \emph{etc}.
+Given the motivating use case, code 
+generation routines have been created for the Bright and cyclus execution engines.
+
+
+\setlength{\baselineskip}{12pt}
+
+\bibliographystyle{ans}
+\bibliography{refs}
+
+
+\end{document}
