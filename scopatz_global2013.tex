@@ -29,14 +29,21 @@
 \documentclass{ansconfpaper}
 %
 %  various packages that you may wish to activate for usage 
+\usepackage{listings}
+%\usepackage{color}
 \usepackage{graphicx}
 \usepackage{tabls}
 \usepackage{hyperref}
+\usepackage{verbatim}
 %
 
 %General Short-Cut Commands
 \newcommand{\superscript}[1]{\ensuremath{^{\textrm{#1}}}}
 \newcommand{\subscript}[1]{\ensuremath{_{\textrm{#1}}}}
+\newcommand{\vin}[1]{\texttt{{#1}}}
+%\newcommand{\py}[1]{\begin{lstlisting}[language=Python]{#1}\end{lstlisting}}
+%\newcommand{\pyb}[0]{\begin{lstlisting}[language=Python]}
+%\newcommand{\pye}[0]{\end{lstlisting}}
 %\newcommand{\nuc}[2]{\superscript{#2}{#1}}
 \newcommand{\nuc}[2]{{#1}-{#2}}
 \newcommand{\ith}[0]{$i^{\mbox{th}}$ }
@@ -72,6 +79,7 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+\lstset{language=Python}
 
 \title{A Dynamic, Dependent Type System for Nuclear Fuel Cycle Code Generation}
 
@@ -141,8 +149,263 @@ extension to more fuel cycle simulators, \emph{etc}.
 Given the motivating use case, code 
 generation routines have been created for the Bright and cyclus execution engines.
 
+The remainder of this paper proceeds as follows.  The next section covers the 
+details of the type system.  Then \S \ref{sec:codegen} explains how this type system
+may be used for automatic code generation.  A fuel cycle simulator that uses this
+code generator is exampled in \S \ref{sec:fc}.  Lastly, some conclusions and future
+work are presented in \S \ref{sec:conc}.
+
 \section{Type System}
 \label{sec:ts}
+
+A type system is an agreed upon scaffolding on which to build, compose, and scribe 
+meaning to types of information.  It is not the data itself but rather the labels
+that denote different kinds of data.  For computational systems, all types are 
+reducible to ordered pairs of bits -- the 0 or 1 representation of a boolean state
+\cite{DBLP:journals/jsyml/Church40}.
+
+Therefore, a \emph{dynamic type system} is one which allows additional types to 
+be added to it after its initial construction.  On the other hand, a \emph{dependent 
+type system} is one which allows types contructed as a function of other parameters, 
+including other types.  The majority of modern programing languages provide 
+syntax and compilers for both kinds of type systems.  Therefore any type system with
+the goal of code generation must be both dynamic and dependent.
+
+The xdress software package \cite{xdress} was written by the author of this paper for 
+the purpose of nuclear fuel cycle code generation.  This project is a pure Python 
+project which wraps C++ application programming interfaces (API).  This is because
+C++ is the language in which both Bright and Cyclus facility models are implemented.
+
+XDress provides a suite of tools in the \vin{typesystem.py} module for denoting, 
+describing, and converting
+between various data types and the types coming from various systems.  This is
+achieved by providing canonical abstractions of various kinds of types:
+
+\begin{itemize}
+    \item Base types (int, str, float, non-templated classes)
+    \item Refined types (even or odd ints, strings containing the letter \vin{`a'})
+    \item Dependent types (templates such arrays, maps, sets, vectors)
+\end{itemize}
+
+All types are known by their name (a string identifier) and may be aliased with 
+other names.  However, the string representation of a type is not sufficient to 
+fully describe most types.  The xdress system implements a canonical form for all 
+kinds of types.  This canonical form is itself hashable, being comprised only of 
+Python strings, ints, and tuples.
+
+\subsection{Canonical Forms}
+\label{sec:canon}
+
+First, consider the base types and the forms that they may take.  Base types
+are fiducial.  The type system itself may not make any changes (refinements, 
+template filling) to types of this kind.  They are effectively a sequence of bits.
+(The job of ascribing meaning to these bits falls on external users and programming 
+languages.)  Thus base types may be referred to simply by their string identifier.  
+For example: \vin{`str'}, \vin{`int32'}, \vin{`float64'}, and \vin{`MyClass'}.
+
+Aliases to these -- or any -- type names are given in the \vin{type\_aliases} 
+mapping:
+\begin{lstlisting}
+type_aliases = {
+    'i': 'int32',
+    'i4': 'int32',
+    'int': 'int32',
+    'complex': 'complex128',
+    'b': 'bool',
+    }
+\end{lstlisting}
+
+Furthermore, length-2 tuples are used to denote a type and the name or flag of its
+predicate.  A predicate is a function or transformation that may be applied to 
+verify, validate, cast, coerce, or extend a variable of the given type.  A common 
+usage is to declare a pointer or reference of the underlying type.  This is done with 
+the string flags \vin{`*'} and \vin{`\&'}, e.g.,  \vin{(`char', `*')} and 
+\vin{(`float64', `\&')}.
+
+If the predicate is a positive integer, then this is interpreted as a 
+homogeneous array of the underlying type with the given length.  If this length 
+is zero, then the tuple is often interpreted as a scalar of this type, equivalent 
+to the type itself.  The length-0 scalar interpretation depends on context.  Here 
+are some examples of array types:
+\begin{lstlisting}
+# length-42 character array
+('char', 42)  
+
+# length-1 boolean array
+('bool', 1)   
+
+# scalar 64-bit float
+('f8', 0)     
+\end{lstlisting}
+
+The next kind of type are \emph{refinement types} or \emph{refined types}.  
+A refined type
+is a sub-type of another type but restricts in some way what constitutes a valid 
+element.  For example, given the set of all integers, the set of all positive 
+integers is a refinement of the original.  Similarly, starting with all possible
+strings the set of all strings starting with \vin{`A'} is a refinement.
+
+In the xdress system, refined types are given their own unique names (e.g. 
+\vin{`posint'} and \vin{`astr'}).  The type system has a mapping from all refinement
+type names to the names of their super-type.  The user may refer to refinement types
+simply by their string name.  However the canonical form refinement types is to use
+the refinement as the predicate of the super-type in a length-2 tuple, as above:
+\begin{lstlisting}
+# refinement of integers to 
+# positive ints
+('int32', 'posint')
+
+# refinement of strings to 
+# str starting with 'A'
+('str', 'astr')      
+\end{lstlisting}
+It is these refinement types that give the second index in the tuple its `predicate'
+name.  Additionally, the predicate is used to look up the converter and validation
+functions in when doing code generation or type verification.
+
+The last kind of type are known as \emph{dependent types} or \emph{template types}, 
+similar in concept to C++ template classes.  These are meta-types whose 
+instantiation requires one or more parameters to be filled in by further values or
+types. Dependent types may nest with themselves or other dependent types.  Fully 
+qualifying a template type requires the resolution of all dependencies.
+
+Classic examples of dependent types include the C++ template classes.  These take
+other types as their dependencies.  Other cases may require only values as 
+their dependencies.  For example, suppose the user wants to restrict integers to 
+various ranges.  Rather than creating a refinement type for every combination of 
+integer bounds, single 'intrange' type may be implemented that defines high and low 
+dependencies.
+
+The \vin{template\_types} mapping takes the dependent type names (e.g. \vin{`map'})
+to a tuple of their dependency names (\vin{`key'}, \vin{`value'}).   Thus 
+refined types are also accepted as tuples of the following form:
+\begin{lstlisting}
+('<typename>', '<dep0-name>', 
+    ('dep1-name', 'dep1-type'), ..)
+\end{lstlisting}
+Note that template names may be reused as types of other template parameters:
+\begin{lstlisting}
+('name', 'dep0-name', 
+    ('dep1-name', 'dep0-name'))
+\end{lstlisting}
+
+As we have seen, dependent
+types may either be base types (when based off of template classes), refined types,
+or both.  Their canonical form thus follows the rules above with some additional 
+syntax.  The first element of the tuple is still the type name and the last 
+element is still the predicate (default 0).  However the type tuples now have a
+length equal to 2 plus the number of dependencies.  These dependencies are 
+placed between the name and the predicate: \vin{(`<name>', <dep0>, ..., <predicate>)}.
+These dependencies may be other type names or tuples themselves. 
+
+In the simplest case, take analogies to C++ template classes::
+\begin{lstlisting}
+('set', 'complex128', 0)
+('map', 'int32', 'float64', 0)
+('map', ('int32', 'posint'), 
+    'float64', 0)
+('map', ('int32', 'posint'), 
+    ('set', 'complex128', 0), 0)
+\end{lstlisting}
+Now consider the intrange type from above.  This has the following definition and
+canonical form::
+
+\begin{lstlisting}
+refined_types = {('intrange', 
+    ('low', 'int32'), 
+    ('high', 'int32')): 'int32'}
+
+# range from 1 -> 2
+('int32', ('intrange', 
+    ('low', 'int32', 1), 
+    ('high', 'int32', 2)))
+
+# range from -42 -> 42
+('int32', ('intrange', 
+    ('low', 'int32', -42), 
+    ('high', 'int32', 42)))
+\end{lstlisting}
+Note that the low and high dependencies here are length three tuples of the form
+\vin{(`<dep-name>', <dep-type>, <dep-value>)}.  How the dependency values end up 
+being used is solely at the discretion of the implementation.  These values may
+be anything, though they are most useful when they are easily convertible into 
+strings in the target language.
+
+Next, consider a \vin{`range'} type which behaves similarly to \vin{`intrange'} 
+except that it also accepts the type as dependency.  This has the following 
+definition and canonical form:
+\begin{lstlisting}
+refined_types = {('range', 'vtype', 
+    ('low', 'vtype'), 
+    ('high', 'vtype')): 'vtype'}
+    
+# integer range from 1 -> 2
+('int32', ('range', 'int32', 
+    ('low', 'int32', 1), 
+    ('high', 'int32', 2)))    
+
+# positive int range from 42 -> 65
+(('int32', 'posint'), ('range', 
+  ('int32', 'posint'),
+  ('low', ('int32', 'posint'), 42),
+  ('high', ('int32', 'posint'), 65)
+  ))
+\end{lstlisting}
+
+\subsection{Shorthand Forms}
+\label{sec:shorhand}
+
+The canonical forms for types contain all the information needed to fully describe
+different kinds of types.  However, as human-facing code, they can be exceedingly 
+verbose.  Therefore there are number of shorthand techniques that may be used to 
+also denote the various types.  Converting from these shorthands to the fully
+expanded version may be done via the the \vin{canon(t)} function.  This function
+takes a single type and returns the canonical form of that type.  The following
+are operations that \vin{canon()}  performs:
+
+* Base type are returned as their name::
+
+    canon('str') == 'str'
+
+* Aliases are resolved::
+
+    canon('f4') == 'float32'
+
+* Expands length-1 tuples to scalar predicates::
+
+    t = ('int32',)
+    canon(t) == ('int32', 0)
+
+* Determines the super-type of refinements::
+
+    canon('posint') == ('int32', 'posint')
+
+* Applies templates::
+
+    t = ('set', 'float')
+    canon(t) == ('set', 'float64', 0)
+
+* Applies dependencies:: 
+
+    t = ('intrange', 1, 2)
+    canon(t) = ('int32', ('intrange', ('low', 'int32', 1), ('high', 'int32', 2)))
+
+    t = ('range', 'int32', 1, 2)
+    canon(t) = ('int32', ('range', 'int32', ('low', 'int32', 1), ('high', 'int32', 2)))
+
+* Performs all of the above recursively::
+
+    t = (('map', 'posint', ('set', ('intrange', 1, 2))),)
+    canon(t) == (('map', 
+                 ('int32', 'posint'),  
+                 ('set', ('int32', 
+                    ('intrange', ('low', 'int32', 1), ('high', 'int32', 2))), 0)), 0)
+
+These shorthands are thus far more useful and intuitive than canonical form described
+above.  It is therefore recommended that users and developers write code that uses
+the shorter versions, Note that ``canon()`` is guaranteed to return strings, tuples, 
+and integers only -- making the output of this function hashable.
+
 
 \section{Code Generator}
 \label{sec:codegen}
