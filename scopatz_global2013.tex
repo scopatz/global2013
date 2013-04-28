@@ -166,7 +166,7 @@ reducible to ordered pairs of bits -- the 0 or 1 representation of a boolean sta
 
 Therefore, a \emph{dynamic type system} is one which allows additional types to 
 be added to it after its initial construction.  On the other hand, a \emph{dependent 
-type system} is one which allows types contructed as a function of other parameters, 
+type system} is one which allows types constructed as a function of other parameters, 
 including other types.  The majority of modern programing languages provide 
 syntax and compilers for both kinds of type systems.  Therefore any type system with
 the goal of code generation must be both dynamic and dependent.
@@ -401,14 +401,14 @@ to describe arbitrary APIs from any modern programming language.  With the aid
 of external parsers and lexers, abstract syntax trees (AST) may be generated 
 and visited.  In the process of visiting the API nodes of the AST, nuclear 
 fuel cycle facilities can be automatically described.  Once a description is 
-obtained, wrapper code from the source language to the lagunage of the fuel 
-cycle simulator may also be automaticaly created.
+obtained, wrapper code from the source language to the language of the fuel 
+cycle simulator may also be automatically created.
 
 \subsection{Descriptions}
 \label{sec:desc}
 
 The first step in automatically generating wrapper code is to have a clear and 
-consice definition of API element \emph{descriptions}.  Since APIs are by definition 
+concise definition of API element \emph{descriptions}.  Since APIs are by definition 
 independent of the implementations that they subsume the API descriptions themselves
 need not comprise full ASTs.  This makes the API contract much simpler than what
 is required by language syntaxes.  In C++ there are three
@@ -473,7 +473,7 @@ description dictionary may be seen in Figure \ref{rep_ex}.
     The remaining elements (if any) are the function arguments.  Arguments are 
     themselves length-2 or -3 tuples whose first elements are the argument names, 
     the second element is the argument type, and the third element (if present) is
-    the default value. Unlike class constuctors and destructors, the return type 
+    the default value. Unlike class constructors and destructors, the return type 
     may not be None (only \vin{`void'} values are allowed).\\
 \vin{docstring} & string, optional, this is a documentation string for the function.\\
 \vin{extra} & dictionary, optional, this stores arbitrary metadata that may be used
@@ -517,8 +517,8 @@ class_desc = {
 \subsection{Description \& Code Generation}
 \label{sec:autodesc}
 
-The API descriptions detailed above may serve as a contract between facilitiy 
-implmentations and wrapper generators.  XDress provides a two stage mechanism 
+The API descriptions detailed above may serve as a contract between facility 
+implementations and wrapper generators.  XDress provides a two stage mechanism 
 for automating these tasks.  The first stage is automatic description generation 
 and the second stage takes these descriptions and pushes them to the wrapper 
 generator.  
@@ -534,13 +534,13 @@ then used to create wrapper code via the xdress \vin{cythongen} tool.
 \label{sec:fc}
 
 Fuel cycle facility models are often represented as classes in C++. In the object
-oreinted programming paradigm classes are compound and stateful types.  This implies 
+oriented programming paradigm classes are compound and stateful types.  This implies 
 that the type system and API description abstractions presented above are applicable
 to fuel cycle facility models.  
 
-However, more importantly, because classes \emph{are} types, the facilitiy models 
+However, more importantly, because classes \emph{are} types, the facility models 
 can be added dynamically to the type system as first class members.  This means
-that the type system is iteself a surrogate abstraction for a fuel cycle execution 
+that the type system is itself a surrogate abstraction for a fuel cycle execution 
 model.  The type system describes relationships between its member types just as 
 a fuel cycle simulator implements relationships between its member facilities.
 
@@ -548,7 +548,7 @@ Therefore, by describing a suite of facility models for one fuel cycle simulator
 xdress wrappers may be automatically generated that expose these models to any
 other execution engine.  This allows for near complete interoperability between 
 fuel cycle simulators.  One simulator may borrow any or all of the models coming 
-from another simulator, assuming the approriate wrapper generator has been written.
+from another simulator, assuming the appropriate wrapper generator has been written.
 To date, a wrapper generator has been constructed for internal Bright usage between
 the C++ and Python execution engines.  Additionally, a Bright-to-Cyclus wrapper is 
 currently in development.
@@ -558,16 +558,16 @@ currently in development.
 
 The type and API descriptions presented above are key components to agnostically
 representing the nuclear fuel cycle and its component facility models.  As such,
-they form the backbone for interoperablity between various fuel cycle execution 
+they form the backbone for interoperability between various fuel cycle execution 
 engines.  A robust type system was therefore developed as the base component of 
 the xdress project.  The xdress project itself was born out of an increasing need 
-to perform code generation taks for the Bright and Cyclus nuclear fuel cycle 
+to perform code generation tasks for the Bright and Cyclus nuclear fuel cycle 
 simulators.  While the abstractions implemented in xdress are very general, their 
 primary usage is in the context of the fuel cycle.  
 
 To date, the type system has dramatically increased the usability of the Bright
-project by enabling the expression of arbiratily complex types -- such as classes.
-It has also significantly reduced the congnitive load on Bright developers.  This 
+project by enabling the expression of arbitrarily complex types -- such as classes.
+It has also significantly reduced the cognitive load on Bright developers.  This 
 is because a facility model need only have a single primary API which is then 
 automatically wrapped. (Previous Bright incarnations required manual wrapping by
 developers if desired.)  Ongoing and future work involves exposing Bright facility
