@@ -95,9 +95,9 @@ Herein is described a type system for performing automatic code generation
 in the context of nuclear fuel cycle simulators.  This focuses on the 
 facility model use case.  Facility model wrappers may be used either internally
 to a fuel cycle simulator or as a mechanism for inter-operating multiple simulators.
-While such a tool has many potential use cases, the primary purposes it serves is 
-to easily perform code-to-code comparisons for verification and validation of user
-input.
+While such a tool has many potential use cases it has two the primary purposes:
+enabling easy permance of code-to-code comparisons and the verification and 
+validation of user input.
 
 \emph{Key Words}: Cyclus, Bright, fuel cycle
 \end{abstract}
@@ -157,8 +157,8 @@ generation routines have been created for the Bright and cyclus execution engine
 
 The remainder of this paper proceeds as follows.  The next section covers the 
 details of the type system.  Then \S \ref{sec:codegen} explains how this type system
-may be used for automatic code generation.  A fuel cycle simulator that uses this
-code generator is exampled in \S \ref{sec:fc}.  Lastly, some conclusions and future
+may be used for automatic code generation.  How these tools impact a fuel cycle 
+simulator is discussed in \S \ref{sec:fc}.  Lastly, some conclusions and future
 work are presented in \S \ref{sec:conc}.
 
 \section{Type System}
@@ -178,7 +178,7 @@ syntax and compilers for both kinds of type systems.  Therefore any type system 
 the goal of code generation must be both dynamic and dependent.
 
 The xdress software package \cite{xdress} was written by the author of this paper for 
-the purpose of nuclear fuel cycle code generation.  This project is a pure Python 
+the purpose of nuclear fuel cycle code generation.  XDress is a pure Python 
 project which wraps C++ application programming interfaces (API).  This is because
 C++ is the language in which both Bright and Cyclus facility models are implemented.
 
@@ -188,16 +188,16 @@ between various data types and the types coming from various systems.  This is
 achieved by providing canonical abstractions of various kinds of types:
 
 \begin{itemize}
-    \item Base types (int, str, float, non-templated classes)
-    \item Refined types (even or odd ints, strings containing the letter \vin{`a'})
-    \item Dependent types (templates such arrays, maps, sets, vectors)
+    \item base types (int, str, float, non-templated classes),
+    \item refined types (even or odd ints, strings containing the letter \vin{`a'}),
+    \item and dependent types (templates such arrays, maps, sets, vectors).
 \end{itemize}
 
 All types are known by their name (a string identifier) and may be aliased with 
 other names.  However, the string representation of a type is not sufficient to 
 fully describe most types.  The xdress system implements a canonical form for all 
 kinds of types.  This canonical form is itself hashable, being comprised only of 
-Python strings, ints, and tuples.
+Python strings, integers, and tuples.
 
 \subsection{Canonical Forms}
 \label{sec:canon}
@@ -209,7 +209,7 @@ template filling) to types of this kind.  They are effectively a sequence of bit
 languages.)  Thus base types may be referred to simply by their string identifier.  
 For example: \vin{`str'}, \vin{`int32'}, \vin{`float64'}, and \vin{`MyClass'}.
 
-Aliases to these -- or any -- type names are given in the \vin{type\_aliases} 
+Aliases to these (or any) type names are given in the \vin{type\_aliases} 
 mapping:
 \begin{lstlisting}
 type_aliases = {
@@ -222,7 +222,7 @@ type_aliases = {
 \end{lstlisting}
 
 Furthermore, length-2 tuples are used to denote a type and the name or flag of its
-predicate.  A predicate is a function or transformation that may be applied to 
+predicate.  A \emph{predicate }is a function or transformation that may be applied to 
 verify, validate, cast, coerce, or extend a variable of the given type.  A common 
 usage is to declare a pointer or reference of the underlying type.  This is done with 
 the string flags \vin{`*'} and \vin{`\&'}, e.g.,  \vin{(`char', `*')} and 
@@ -265,11 +265,11 @@ the refinement as the predicate of the super-type in a length-2 tuple, as above:
 # str starting with 'A'
 ('str', 'astr')      
 \end{lstlisting}
-It is these refinement types that give the second index in the tuple its `predicate'
+It is these refinement types that give the second index in the tuple its predicate
 name.  Additionally, the predicate is used to look up the converter and validation
-functions in when doing code generation or type verification.
+functions when doing code generation or type verification.
 
-The last kind of type are known as \emph{dependent types} or \emph{template types}, 
+The last kind of types are known as \emph{dependent types} or \emph{template types}, 
 similar in concept to C++ template classes.  These are meta-types whose 
 instantiation requires one or more parameters to be filled in by further values or
 types. Dependent types may nest with themselves or other dependent types.  Fully 
@@ -295,7 +295,7 @@ Note that template names may be reused as types of other template parameters:
     ('dep1-name', 'dep0-name'))
 \end{lstlisting}
 
-As we have seen, dependent
+Dependent
 types may either be base types (when based off of template classes), refined types,
 or both.  Their canonical form thus follows the rules above with some additional 
 syntax.  The first element of the tuple is still the type name and the last 
@@ -304,7 +304,7 @@ length equal to 2 plus the number of dependencies.  These dependencies are
 placed between the name and the predicate: \vin{(`<name>', <dep0>, ..., <predicate>)}.
 These dependencies may be other type names or tuples themselves. 
 
-In the simplest case, take analogies to C++ template classes::
+In the simplest case, consider analogies to C++ template classes:
 \begin{lstlisting}
 ('set', 'complex128', 0)
 ('map', 'int32', 'float64', 0)
@@ -313,11 +313,12 @@ In the simplest case, take analogies to C++ template classes::
 ('map', ('int32', 'posint'), 
     ('set', 'complex128', 0), 0)
 \end{lstlisting}
-Now consider the intrange type from above.  This has the following definition and
-canonical form::
-
+Now consider the \vin{intrange} type from above. This has the following definition 
+(which is stored in the \vin{`refined\_types'} dictionary) and canonical form for 
+instances of this type:
 \begin{lstlisting}
-refined_types = {('intrange', 
+refined_types = {
+  ('intrange', 
     ('low', 'int32'), 
     ('high', 'int32')): 'int32'}
 
@@ -333,9 +334,9 @@ refined_types = {('intrange',
 \end{lstlisting}
 Note that the low and high dependencies here are length three tuples of the form
 \vin{(`<dep-name>', <dep-type>, <dep-value>)}.  How the dependency values end up 
-being used is solely at the discretion of the implementation.  These values may
-be anything, though they are most useful when they are easily convertible into 
-strings in the target language.
+being used is solely at the discretion of an API generator implementation.  These 
+values may be anything, though they are most useful when they are easily convertible 
+into strings in the target language.
 
 Next, consider a \vin{`range'} type which behaves similarly to \vin{`intrange'} 
 except that it also accepts the type as dependency.  This has the following 
@@ -423,16 +424,6 @@ The primary construct which are of interest to fuel cycle applications are class
 as discussed above.  However since classes may own member functions, functions are
 also illustrated.
 
-Descriptions are simply given by Python dictionaries with a specific structure.
-The description structure is distinct for classes and functions and makes heavy 
-use of the type system to declare the types of all needed parameters.  The top-level
-items that comprise descriptions structure for classes and functions are presented 
-in Tables \ref{classdesc} \& \ref{funcdesc}.
-
-As a simple example of descriptions, consider the \vin{Reprocess} class in Bright 
-which is the facility responsible for reprocessing materials. A minimally valid 
-description dictionary may be seen in Figure \ref{rep_ex}. 
-
 \begin{table*}[htbp]
 \begin{center}
 \caption{Class Descriptions}
@@ -519,6 +510,16 @@ class_desc = {
 \end{center}
 \end{figure}
 \twocolumn
+
+Descriptions are simply given by Python dictionaries with a specific structure.
+The description structure is distinct for classes and functions and makes heavy 
+use of the type system to declare the types of all needed parameters.  The top-level
+items that comprise descriptions structure for classes and functions are presented 
+in Tables \ref{classdesc} \& \ref{funcdesc}.
+
+As a simple example of descriptions, consider the \vin{Reprocess} class in Bright 
+which is the facility responsible for reprocessing materials. A minimally valid 
+description dictionary may be seen in Figure \ref{rep_ex}. 
 
 \subsection{Description \& Code Generation}
 \label{sec:autodesc}
