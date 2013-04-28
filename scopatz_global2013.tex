@@ -530,11 +530,49 @@ description by the xdress \vin{autodescribe.py} module.  These descriptions are
 then used to create wrapper code via the xdress \vin{cythongen} tool.
 
 
-\section{Relationship to the Fuel Cycle}
+\section{Fuel Cycle Facility Models}
 \label{sec:fc}
+
+Fuel cycle facility models are often represented as classes in C++. In the object
+oreinted programming paradigm classes are compound and stateful types.  This implies 
+that the type system and API description abstractions presented above are applicable
+to fuel cycle facility models.  
+
+However, more importantly, because classes \emph{are} types, the facilitiy models 
+can be added dynamically to the type system as first class members.  This means
+that the type system is iteself a surrogate abstraction for a fuel cycle execution 
+model.  The type system describes relationships between its member types just as 
+a fuel cycle simulator implements relationships between its member facilities.
+
+Therefore, by describing a suite of facility models for one fuel cycle simulator with
+xdress wrappers may be automatically generated that expose these models to any
+other execution engine.  This allows for near complete interoperability between 
+fuel cycle simulators.  One simulator may borrow any or all of the models coming 
+from another simulator, assuming the approriate wrapper generator has been written.
+To date, a wrapper generator has been constructed for internal Bright usage between
+the C++ and Python execution engines.  Additionally, a Bright-to-Cyclus wrapper is 
+currently in development.
 
 \section{Conclusions \& Future Work}
 \label{sec:conc}
+
+The type and API descriptions presented above are key components to agnostically
+representing the nuclear fuel cycle and its component facility models.  As such,
+they form the backbone for interoperablity between various fuel cycle execution 
+engines.  A robust type system was therefore developed as the base component of 
+the xdress project.  The xdress project itself was born out of an increasing need 
+to perform code generation taks for the Bright and Cyclus nuclear fuel cycle 
+simulators.  While the abstractions implemented in xdress are very general, their 
+primary usage is in the context of the fuel cycle.  
+
+To date, the type system has dramatically increased the usability of the Bright
+project by enabling the expression of arbiratily complex types -- such as classes.
+It has also significantly reduced the congnitive load on Bright developers.  This 
+is because a facility model need only have a single primary API which is then 
+automatically wrapped. (Previous Bright incarnations required manual wrapping by
+developers if desired.)  Ongoing and future work involves exposing Bright facility
+models to Cyclus and the possibility of creating a Python 
+execution model for Cyclus itself.
 
 \setlength{\baselineskip}{12pt}
 
