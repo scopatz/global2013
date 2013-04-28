@@ -363,49 +363,35 @@ expanded version may be done via the the \vin{canon(t)} function.  This function
 takes a single type and returns the canonical form of that type.  The following
 are operations that \vin{canon()}  performs:
 
-* Base type are returned as their name::
+\begin{itemize}
+\item Base type are returned as their name: \vin{canon(`str') == `str'}.
 
-    canon('str') == 'str'
+\item Aliases are resolved: \vin{canon(`f4') == `float32'}.
 
-* Aliases are resolved::
+\item Determines the super-type of refinements: \vin{canon(`posint') == 
+    (`int32', `posint')}.
 
-    canon('f4') == 'float32'
+\item Applies templates:
+\begin{lstlisting}
+t = ('set', 'float')
+canon(t) == ('set','float64',0)
+\end{lstlisting}
 
-* Expands length-1 tuples to scalar predicates::
+\item Applies dependencies:
+\begin{lstlisting}    
+t = ('intrange', 1, 2)
+canon(t) == ('int32', 
+  ('intrange', 
+    ('low', 'int32', 1), 
+    ('high', 'int32', 2)))
+\end{lstlisting}
 
-    t = ('int32',)
-    canon(t) == ('int32', 0)
+\item Performs all of the above recursively.
+\end{itemize}
 
-* Determines the super-type of refinements::
-
-    canon('posint') == ('int32', 'posint')
-
-* Applies templates::
-
-    t = ('set', 'float')
-    canon(t) == ('set', 'float64', 0)
-
-* Applies dependencies:: 
-
-    t = ('intrange', 1, 2)
-    canon(t) = ('int32', ('intrange', ('low', 'int32', 1), ('high', 'int32', 2)))
-
-    t = ('range', 'int32', 1, 2)
-    canon(t) = ('int32', ('range', 'int32', ('low', 'int32', 1), ('high', 'int32', 2)))
-
-* Performs all of the above recursively::
-
-    t = (('map', 'posint', ('set', ('intrange', 1, 2))),)
-    canon(t) == (('map', 
-                 ('int32', 'posint'),  
-                 ('set', ('int32', 
-                    ('intrange', ('low', 'int32', 1), ('high', 'int32', 2))), 0)), 0)
-
-These shorthands are thus far more useful and intuitive than canonical form described
-above.  It is therefore recommended that users and developers write code that uses
-the shorter versions, Note that ``canon()`` is guaranteed to return strings, tuples, 
-and integers only -- making the output of this function hashable.
-
+These shorthands are thus far more useful and intuitive than the canonical forms 
+described in \S \ref{sec:canon}.  It is therefore recommended that users and 
+developers write code that uses the shorthand versions.
 
 \section{Code Generator}
 \label{sec:codegen}
