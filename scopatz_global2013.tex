@@ -141,11 +141,28 @@ The requirement of one implementation for multiple simulators has recently
 arisen for the Bright collection of fuel cycle facilities \cite{Scopatz2009}.
 Bright's default graph representation is the Python abstract syntax tree and its
 execution engine is the Python interpreter.  However, the facility models -- 
-which are implemented in C++ -- must now also be hooked into the cyclus simulator.  
+which are implemented in C++ -- must now also be hooked into the Cyclus simulator.  
 Cyclus uses XML as its input graph representation and a custom client-server based 
 execution engine \cite{cyclus2012}.
 
-Therefore a robust, dependent type system was developed for the nuclear fuel cycle.
+Bright is a quasi-static simulator, meaning that the the number of material
+passes through a facility is tracked rather than natural time. Bright is implemented 
+as a C++ library that models many canonical components such as reactors, storage 
+facilities, and more. These components are then linked to one another using the 
+Material object from PyNE.
+
+Cyclus is a discrete time simulator, meaning that natural time is tracked through out
+the simulation.  Cyclus is implemented using an agent-based system dynamics approach.
+Cyclus is also written in C++.  Various facilities (agents) are linked to each other
+via customizable market matching techniques.  
+
+The underlying assumptions of Bright and Cyclus are significantly different, 
+but not irreconciblable.  Resolving how facilities interoperate is a tedious
+and automatable task.  At the most basic level, C++ classes interact via primitive
+types in this language.
+
+Therefore a robust, dependent type system was developed for the nuclear fuel cycle
+to enable interoperability betwen Bright and Cyclus.
 This system is capable of representing any fuel cycle facility.  Types declared in 
 this system can then be used to automatically generate code which binds a facility 
 implementation to a simulator front end.  
@@ -155,7 +172,7 @@ This strategy also has advantages common to code code generation techniques:
 inoculation against front end interface fragility, easy 
 extension to more fuel cycle simulators, \emph{etc}.
 Given the motivating use case, code 
-generation routines have been created for the Bright and cyclus execution engines.
+generation routines have been created for the Bright and Cyclus execution engines.
 
 The remainder of this paper proceeds as follows.  The next section covers the 
 details of the type system.  Then \S \ref{sec:codegen} explains how this type system
