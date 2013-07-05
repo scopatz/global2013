@@ -55,19 +55,19 @@
 \renewcommand{\footrulewidth}{0pt}
 
 % Header/footer for other pages
-\fancyhf{}
-\fancyhead[CE]{{\scriptsize \@authorHead}}
-\fancyhead[CO]{{\scriptsize \@shortTitle}}
-\lfoot{\scriptsize{\@confTitle, \\ \@confLocation.}}
-\rfoot{\thepage/\pageref{LastPage}}
-\pagestyle{fancy}
+%\fancyhf{}
+%\fancyhead[CE]{{\scriptsize \@authorHead}}
+%\fancyhead[CO]{{\scriptsize \@shortTitle}}
+%\lfoot{\scriptsize{\@confTitle, \\ \@confLocation.}}
+%\rfoot{\thepage/\pageref{LastPage}}
+%\pagestyle{fancy}
 
 % Header/footer for first page
-\fancypagestyle{plain}{
-  \fancyhf{}
-  \lhead{\scriptsize{\emph{\@confTitle} \\ \@confLocation, \@confPublished}}
-  \lfoot{}
-}
+%\fancypagestyle{plain}{
+%  \fancyhf{}
+%  \lhead{\scriptsize{\emph{\@confTitle} \\ \@confLocation, \@confPublished}}
+%  \lfoot{}
+%}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Styles for \section, \subsection, \subsubsection
@@ -123,6 +123,7 @@
 }
 
 \RequirePackage[style]{abstract}
-\renewcommand{\abstitlestyle}[1]{\bfseries\centering\MakeUppercase#1}
+%\renewcommand{\abstitlestyle}[1]{\bfseries\centering\MakeUppercase#1}
+\renewcommand{\abstitlestyle}[1]{}
 
 %\AtBeginDocument{\raggedright}
