@@ -176,8 +176,9 @@ generation routines have been created for the Bright and Cyclus execution engine
 
 
 Note that many of the examples in this document are at the level of C++ language 
-primitives because this is \emph{how} fuel cycle simulator facilities interoperate, 
-no matter how sophisticated the internal calculation may be.  However, the type 
+primitives because this is \emph{how} fuel cycle simulator facilities interoperate.
+This interface exchane is independent of how sophisticated the internal calculation 
+may be.  However, the type 
 system abstractions presented here are pertinant and valuable to any fuel cycle 
 code that relies on a facility class model.
 
@@ -190,7 +191,7 @@ work are presented in \S \ref{sec:conc}.
 \section{Type System}
 \label{sec:ts}
 
-A type system is an agreed upon scaffolding on which to build, compose, and scribe 
+A type system is an agreed upon scaffolding on which to build, compose, and ascribe 
 meaning to types of information.  It is not the data itself but rather the labels
 that denote different kinds of data.  For computational systems, all types are 
 reducible to ordered pairs of bits -- the 0 or 1 representation of a boolean state
@@ -198,10 +199,10 @@ reducible to ordered pairs of bits -- the 0 or 1 representation of a boolean sta
 
 Therefore, a \emph{dynamic type system} is one which allows additional types to 
 be added to it after its initial construction.  On the other hand, a \emph{dependent 
-type system} is one which allows types constructed as a function of other parameters, 
-including other types.  The majority of modern programing languages provide 
-syntax and compilers for both kinds of type systems.  Therefore any type system with
-the goal of code generation must be both dynamic and dependent.
+type system} is one which allows types tob be constructed as a function of other 
+parameters, including other types.  The majority of modern programing languages 
+provide  syntax and compilers for both kinds of type systems.  Therefore any type 
+system with the goal of code generation must be both dynamic and dependent.
 
 The xdress software package \cite{xdress} was written by the author of this paper for 
 the purpose of nuclear fuel cycle code generation.  XDress is a pure Python 
@@ -215,7 +216,7 @@ achieved by providing canonical abstractions of various kinds of types:
 
 \begin{itemize}
     \item base types (int, str, float, non-templated classes),
-    \item refined types (even or odd ints, strings containing the letter \vin{`a'}),
+    \item refined types (even or odd ints, strings containing the letter \vin{a}),
     \item and dependent types (templates such arrays, maps, sets, vectors).
 \end{itemize}
 
@@ -233,7 +234,7 @@ are fiducial.  The type system itself may not make any changes (refinements,
 template filling) to types of this kind.  They are effectively a sequence of bits.
 (The job of ascribing meaning to these bits falls on external users and programming 
 languages.)  Thus base types may be referred to simply by their string identifier.  
-For example: \vin{`str'}, \vin{`int32'}, \vin{`float64'}, and \vin{`MyClass'}.
+For example: \vin{str}, \vin{int32}, \vin{float64}, and \vin{MyClass}.
 
 Aliases to these (or any) type names are given in the \vin{type\_aliases} 
 mapping:
@@ -251,7 +252,7 @@ Furthermore, length-2 tuples are used to denote a type and the name or flag of i
 predicate.  A \emph{predicate }is a function or transformation that may be applied to 
 verify, validate, cast, coerce, or extend a variable of the given type.  A common 
 usage is to declare a pointer or reference of the underlying type.  This is done with 
-the string flags \vin{`*'} and \vin{`\&'}, e.g.,  \vin{(`char', `*')} and 
+the string flags \vin{*} and \vin{\&}, e.g.,  \vin{(`char', `*')} and 
 \vin{(`float64', `\&')}.
 
 If the predicate is a positive integer, then this is interpreted as a 
@@ -426,30 +427,6 @@ These shorthands are thus far more useful and intuitive than the canonical forms
 described in \S \ref{sec:canon}.  It is therefore recommended that users and 
 developers write code that uses the shorthand versions.
 
-\section{Automatic Code Generation}
-\label{sec:codegen}
-
-Using the type system abstractions detailed in \S \ref{sec:ts} it is possible
-to describe arbitrary APIs from any modern programming language.  With the aid
-of external parsers and lexers, abstract syntax trees (AST) may be generated 
-and visited.  In the process of visiting the API nodes of the AST, nuclear 
-fuel cycle facilities can be automatically described.  Once a description is 
-obtained, wrapper code from the source language to the language of the fuel 
-cycle simulator may also be automatically created.
-
-\subsection{Descriptions}
-\label{sec:desc}
-
-The first step in automatically generating wrapper code is to have a clear and 
-concise definition of API element \emph{descriptions}.  Since APIs are by definition 
-independent of the implementations that they subsume the API descriptions themselves
-need not comprise full ASTs.  This makes the API contract much simpler than what
-is required by language syntaxes.  In C++ there are three
-basic constructs which may be wrapped: variables, functions, and classes.  
-The primary construct which are of interest to fuel cycle applications are classes, 
-as discussed above.  However since classes may own member functions, functions are
-also illustrated.
-
 \begin{table*}[htbp]
 \begin{center}
 \caption{Class Descriptions}
@@ -536,6 +513,30 @@ class_desc = {
 \end{center}
 \end{figure}
 \twocolumn
+
+\section{Automatic Code Generation}
+\label{sec:codegen}
+
+Using the type system abstractions detailed in \S \ref{sec:ts} it is possible
+to describe arbitrary APIs from any modern programming language.  With the aid
+of external parsers and lexers, abstract syntax trees (AST) may be generated 
+and visited.  In the process of visiting the API nodes of the AST, nuclear 
+fuel cycle facilities can be automatically described.  Once a description is 
+obtained, wrapper code from the source language to the language of the fuel 
+cycle simulator may also be automatically created.
+
+\subsection{Descriptions}
+\label{sec:desc}
+
+The first step in automatically generating wrapper code is to have a clear and 
+concise definition of API element \emph{descriptions}.  Since APIs are by definition 
+independent of the implementations that they subsume the API descriptions themselves
+need not comprise full ASTs.  This makes the API contract much simpler than what
+is required by language syntaxes.  In C++ there are three
+basic constructs which may be wrapped: variables, functions, and classes.  
+The primary construct which are of interest to fuel cycle applications are classes, 
+as discussed above.  However since classes may own member functions, functions are
+also illustrated.
 
 Descriptions are simply given by Python dictionaries with a specific structure.
 The description structure is distinct for classes and functions and makes heavy 
