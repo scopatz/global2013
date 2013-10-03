@@ -12,7 +12,7 @@ all:
 	sed -i 's:class="fragment" class="text_cell_render:class="fragment text_cell_render:' $(notebook).slides.html $<
 	sed -i 's/.rendered_html ul{list-style:disc;margin:1em 2em;}/.rendered_html ul{list-style:disc;margin:0em 2em;}/' $(notebook).slides.html $<
 	sed -i '/<\!-- Social buttons -->/,/<\!-- End of social buttons -->/d' $(notebook).slides.html $<
-	sed -i 's/background: #3F3F3F;/background: #4A363D;/' reveal.js/lib/css/zenburn.css $<
+	#sed -i 's/background: #3F3F3F;/background: #4A363D;/' reveal.js/lib/css/zenburn.css $<
 
 clean:
 	rm -f *.pdf *.html *.zip
